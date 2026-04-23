@@ -82,7 +82,13 @@ class FeatureProjection(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv = nn.Conv1d(INPUT_DIM, PROJ_DIM, kernel_size=1, bias=False)
-        self.norm = nn.GroupNorm(1, PROJ_DIM)   # equivalent to LayerNorm
+        # FIX: use InstanceNorm1d (normalises each channel over T independently).
+        # GroupNorm(1, C) on (B, C, T) averages over C*T simultaneously, so the
+        # statistics differ between a 128-frame training window and a ~4000-frame
+        # test sequence — causing a massive distribution shift at inference time.
+        # InstanceNorm1d(C, affine=True) normalises per-channel over T; the result
+        # is identical regardless of sequence length.
+        self.norm = nn.InstanceNorm1d(PROJ_DIM, affine=True)
         self.act  = nn.GELU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -94,7 +100,8 @@ class GatedTemporalBlock(nn.Module):
     """
     Gated Dilated Temporal Conv block.
     output = tanh(filter_conv(x)) × sigmoid(gate_conv(x)) + residual
-    GroupNorm(1, C) ≡ LayerNorm for 1-D — stable at any sequence length.
+    InstanceNorm1d(C, affine=True) normalises each channel over T independently,
+    so statistics are identical for any sequence length (train or test).
     """
     def __init__(self, in_ch: int, out_ch: int, dilation: int):
         super().__init__()
@@ -102,7 +109,8 @@ class GatedTemporalBlock(nn.Module):
                                      padding=dilation, dilation=dilation)
         self.gate_conv   = nn.Conv1d(in_ch, out_ch, 3,
                                      padding=dilation, dilation=dilation)
-        self.norm        = nn.GroupNorm(1, out_ch)
+        # FIX: InstanceNorm1d instead of GroupNorm(1, out_ch) — see FeatureProjection.
+        self.norm        = nn.InstanceNorm1d(out_ch, affine=True)
         self.dropout     = nn.Dropout(DROPOUT)
         self.residual    = nn.Conv1d(in_ch, out_ch, 1) if in_ch != out_ch else None
 
