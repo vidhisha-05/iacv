@@ -13,7 +13,7 @@ Output: labels_num/<video_id>.txt  — one integer per line
 import os
 from collections import Counter
 
-from config import LABEL_ROOT, LABEL_NUM_ROOT, LABEL2ID, CLASS_NAMES, NUM_CLASSES
+from config import LABEL_ROOT, LABEL_NUM_ROOT, LABEL2ID, CLASS_NAMES, NUM_CLASSES, UNKNOWN_ORIG_ID
 
 os.makedirs(LABEL_NUM_ROOT, exist_ok=True)
 
@@ -36,7 +36,7 @@ for file in txt_files:
         idx = LABEL2ID.get(lbl, None)
         if idx is None:
             bad += 1
-            idx = LABEL2ID["unknown"]   # graceful fallback
+            idx = UNKNOWN_ORIG_ID   # graceful fallback
         num_labels.append(idx)
 
     # Per-file stats

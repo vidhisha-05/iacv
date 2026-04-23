@@ -1,6 +1,6 @@
 import sys
 
-files = ['train.py', 'evaluate.py', 'lovo_eval.py']
+files = ['train.py', 'evaluate.py']
 
 # Map unicode code points to ASCII equivalents
 replacements = {
