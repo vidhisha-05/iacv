@@ -55,16 +55,20 @@ import os
 # ===========================================================================
 # PATHS
 # ===========================================================================
-IMAGE_ROOT       = "images"
-GAZE_ROOT        = "gaze"
-PHASE_ROOT       = "annotations/phase"
-PROCESSED_ROOT   = "processed"
-FEATURE_ROOT     = "features"
-LABEL_ROOT       = "labels"
-LABEL_NUM_ROOT   = "labels_num"
+# Dataset lives in the Desktop project folder; code lives in the repo.
+# All data paths point to the Desktop project; MODEL_PATH saves in the repo.
+_DATASET_ROOT    = r"C:\Users\Vidhisha\OneDrive\Desktop\project"
+
+IMAGE_ROOT       = os.path.join(_DATASET_ROOT, "images")
+GAZE_ROOT        = os.path.join(_DATASET_ROOT, "gaze")
+PHASE_ROOT       = os.path.join(_DATASET_ROOT, "annotations", "phase")
+PROCESSED_ROOT   = os.path.join(_DATASET_ROOT, "processed")
+FEATURE_ROOT     = os.path.join(_DATASET_ROOT, "features")
+LABEL_ROOT       = os.path.join(_DATASET_ROOT, "labels")
+LABEL_NUM_ROOT   = os.path.join(_DATASET_ROOT, "labels_num")
 TRAIN_STATS_PATH = os.path.join(FEATURE_ROOT, "train_stats.npz")
 
-MODEL_PATH       = "best_model.pth"
+MODEL_PATH       = "best_model.pth"   # saved in the repo directory
 
 # ===========================================================================
 # VIDEO SPLITS
