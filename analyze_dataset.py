@@ -1,11 +1,22 @@
+"""
+analyze_dataset.py — Dataset statistics and class distribution analysis.
+
+Uses config.py as the single source of truth for paths and class names.
+"""
+
 import os
 import numpy as np
 from collections import Counter, defaultdict
 
-FEATURE_ROOT = 'features'
-LABEL_ROOT = 'labels_num'
-CLASS_NAMES = ['anesthesia','closure','design','disinfection','dissection',
-               'dressing','hemostasis','incision','irrigation','unknown']
+from config import (
+    FEATURE_ROOT, LABEL_NUM_ROOT,
+    CLASS_NAMES, NUM_CLASSES, UNKNOWN_ORIG_ID,
+)
+
+LABEL_ROOT = LABEL_NUM_ROOT
+# Include "unknown" in display names for analysis (10 entries: 0-8 + unknown=9)
+_CLASS_NAMES = list(CLASS_NAMES) + ["unknown"]
+_TOTAL_CLASSES = NUM_CLASSES + 1   # 9 real + 1 unknown for display
 
 seqs = []
 for fname in sorted(os.listdir(FEATURE_ROOT)):
@@ -37,7 +48,7 @@ for vid, group in sorted(vid_groups.items()):
     lab_all = [l for s in group for l in s['labels']]
     dom = Counter(lab_all).most_common(1)[0]
     print(f"  Video {vid}: {len(group)} clips, {tot_frames} frames, "
-          f"dom={CLASS_NAMES[dom[0]]}({dom[1]/tot_frames*100:.0f}%)")
+          f"dom={_CLASS_NAMES[dom[0]]}({dom[1]/tot_frames*100:.0f}%)")
     all_labels.extend(lab_all)
 
 print()
@@ -45,11 +56,11 @@ total = len(all_labels)
 print(f"TOTAL frames across ALL sequences: {total}")
 counts = Counter(all_labels)
 print("Class distribution (ALL data):")
-for c in range(10):
+for c in range(_TOTAL_CLASSES):
     n = counts.get(c, 0)
     pct = n / total * 100
     bar = '#' * int(pct / 2)
-    print(f"  [{c}] {CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%) {bar}")
+    print(f"  [{c}] {_CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%) {bar}")
 
 print()
 lens = [s['T'] for s in seqs]
@@ -68,17 +79,17 @@ print(f"  Test  frames: {len(test_labels)}")
 
 print("\nClass distribution in TRAIN only:")
 tc = Counter(train_labels)
-for c in range(10):
+for c in range(_TOTAL_CLASSES):
     n = tc.get(c, 0)
     pct = n / max(len(train_labels), 1) * 100
-    print(f"  [{c}] {CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%)")
+    print(f"  [{c}] {_CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%)")
 
 print("\nClass distribution in TEST only (video 21):")
 ec = Counter(test_labels)
-for c in range(10):
+for c in range(_TOTAL_CLASSES):
     n = ec.get(c, 0)
     pct = n / max(len(test_labels), 1) * 100
-    print(f"  [{c}] {CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%)")
+    print(f"  [{c}] {_CLASS_NAMES[c]:<14} {n:>8} ({pct:5.1f}%)")
 
 # Imbalance ratio
 dominant = max(counts.values())

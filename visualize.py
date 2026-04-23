@@ -45,13 +45,18 @@ model.eval()
 # ---- Load + normalise features ----
 feat = np.load(feat_path).astype(np.float32)
 feat = (feat - global_mean) / (global_std + 1e-8)
+# FIX: apply per-sequence instance norm — identical to train.py:load_data()
+seq_mean = feat.mean(axis=0, keepdims=True)
+seq_std  = feat.std(axis=0, keepdims=True).clip(1e-5)
+feat     = (feat - seq_mean) / seq_std
 
 t_feat = torch.tensor(feat, dtype=torch.float32).to(device)
 t_feat = t_feat.permute(1, 0).unsqueeze(0)
 
 with torch.no_grad():
-    _, _, out3 = model(t_feat)   # ← FIXED: unpack 3 values, use stage 3
-    pred = torch.argmax(out3, dim=1).squeeze().cpu().numpy()
+    # FIX: NUM_STAGES=2 → model() returns exactly 2 outputs, not 3.
+    stage_outs = model(t_feat)
+    pred = torch.argmax(stage_outs[-1], dim=1).squeeze().cpu().numpy()
 
 # ---- Load ground truth ----
 with open(label_path) as f:
