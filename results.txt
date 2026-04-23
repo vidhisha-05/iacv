@@ -1,0 +1,119 @@
+Training on: cpu
+
+====================================================================
+  EVALUATION v7 — Video 21
+====================================================================
+
+  [OK] Viterbi enabled — transition matrix loaded
+  [OK] Empirical initial state prior loaded (v6)
+  [OK] TTA enabled (3 inference runs per sequence)
+  Model: best_model.pth  |  1,360,914 params  |  device=cpu
+
+→ 21_1.npy
+  GT dist  : {2: 69}
+  Raw dist : {7: 21, 4: 38, 1: 10}
+  PP  dist : {7: 22, 4: 45, 1: 2}
+  Raw acc=0.0000  PP acc=0.0000  ES_raw=0.0  ES_pp=0.0
+  [graph] Timeline → 21_1_timeline.png
+→ 21_2.npy
+  GT dist  : {3: 9, 2: 17, 0: 18, 7: 17, 4: 403}
+  Raw dist : {0: 53, 1: 37, 7: 46, 4: 300, 6: 20, 8: 7, 2: 1}
+  PP  dist : {0: 72, 1: 6, 7: 41, 4: 326, 6: 16, 8: 3}
+  Raw acc=0.6487  PP acc=0.7220  ES_raw=10.6  ES_pp=20.0
+  [graph] Timeline → 21_2_timeline.png
+→ 21_3.npy
+  GT dist  : {4: 260, 6: 12, 1: 501, 8: 89}
+  Raw dist : {6: 67, 4: 448, 7: 101, 1: 136, 2: 16, 0: 23, 8: 71}
+  PP  dist : {6: 69, 4: 464, 7: 108, 1: 91, 2: 23, 0: 25, 8: 82}
+  Raw acc=0.4107  PP acc=0.4153  ES_raw=13.9  ES_pp=23.7
+  [graph] Timeline → 21_3_timeline.png
+→ 21_4.npy
+  GT dist  : {4: 383, 2: 40, 7: 96, 6: 4, 1: 599}
+  Raw dist : {6: 85, 7: 158, 4: 544, 2: 29, 8: 1, 1: 280, 0: 25}
+  PP  dist : {6: 84, 4: 555, 7: 144, 2: 26, 1: 289, 0: 24}
+  Raw acc=0.3164  PP acc=0.3093  ES_raw=28.0  ES_pp=37.0
+  [graph] Timeline → 21_4_timeline.png
+→ 21_5.npy
+  GT dist  : {1: 7, 5: 196}
+  Raw dist : {1: 76, 4: 87, 2: 14, 7: 23, 6: 3}
+  PP  dist : {1: 67, 4: 96, 7: 33, 6: 1, 2: 6}
+  Raw acc=0.0296  PP acc=0.0345  ES_raw=3.4  ES_pp=9.1
+  [graph] Timeline → 21_5_timeline.png
+
+====================================================================
+  AGGREGATE RESULTS — Video 21  (2720 frames total)
+====================================================================
+
+  ── Zero-Recall Diagnostic ──
+  Class                 GT    GT%     Pred  Pred%  Status
+  --------------------------------------------------------------
+  [0] anesthesia         18    0.7%      121    4.4%  [!]  over-predicted       
+  [1] closure          1107   40.7%      455   16.7%  OK
+  [2] design            126    4.6%       55    2.0%  OK
+  [3] disinfection        9    0.3%        0    0.0%  [X] ZERO RECALL
+  [4] dissection       1046   38.5%     1486   54.6%  OK
+  [5] dressing          196    7.2%        0    0.0%  [X] ZERO RECALL
+  [6] hemostasis         16    0.6%      170    6.2%  [!]  over-predicted       
+  [7] incision          113    4.2%      348   12.8%  [!]  over-predicted       
+  [8] irrigation         89    3.3%       85    3.1%  OK
+
+  [X] 2 zero-recall class(es): ['disinfection', 'dressing']
+
+  ── RAW MODEL OUTPUT ──
+  Full Accuracy : 0.3735  (37.35%)
+  Macro F1      : 0.2586
+  Weighted F1   : 0.3639
+  Edit Score    : 16.23 / 100
+
+  Class             Recall       F1   Support
+  ------------------------------------------------
+  [0] anesthesia    0.4444  0.1345        18
+  [1] closure       0.2367  0.3183      1107
+  [2] design        0.1825  0.2473       126
+  [3] disinfection  0.0000  0.0000         9
+  [4] dissection    0.5688  0.4832      1046
+  [5] dressing      0.0000  0.0000       196
+  [6] hemostasis    0.6875  0.1152        16
+  [7] incision      0.4248  0.2078       113
+  [8] irrigation    0.7753  0.8214        89
+
+  [!]  Worst classes: [3]disinfection(0.000), [5]dressing(0.000), [2]design(0.183)
+
+  ── POST-PROCESSED (Viterbi + TTA v7) ──
+  Full Accuracy : 0.3849  (38.49%)
+  Macro F1      : 0.2725
+  Weighted F1   : 0.3694
+  Edit Score    : 26.61 / 100
+
+  Class             Recall       F1   Support
+  ------------------------------------------------
+  [0] anesthesia    0.8333  0.2158        18
+  [1] closure       0.2114  0.2996      1107
+  [2] design        0.1905  0.2652       126
+  [3] disinfection  0.0000  0.0000         9
+  [4] dissection    0.6185  0.5111      1046
+  [5] dressing      0.0000  0.0000       196
+  [6] hemostasis    0.5000  0.0860        16
+  [7] incision      0.3628  0.1779       113
+  [8] irrigation    0.8764  0.8966        89
+
+  [!]  Worst classes: [3]disinfection(0.000), [5]dressing(0.000), [2]design(0.190)
+
+============================================================
+  ACCURACY SUMMARY
+============================================================
+  Metric                              Raw   Post-Proc
+  ----------------------------------------------------
+  Full Accuracy                    37.35%      38.49%
+  Macro F1                         0.2586      0.2725
+
+  Target: 60-65%
+  [^] Gap to 60%: 21.51% remaining
+============================================================
+
+  [graph] Confusion matrix → cm_raw_video21.png
+  [graph] Confusion matrix → cm_pp_video21.png
+
+====================================================================
+
+PS C:\Users\Vidhisha\iacv> 
